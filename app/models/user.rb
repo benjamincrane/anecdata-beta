@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  has_many :questions, dependent: :destroy
+  has_many :answers, dependent: :destroy
 
 def facebook
   @facebook ||=Koala::Facebook::API.new(oauth_token)
