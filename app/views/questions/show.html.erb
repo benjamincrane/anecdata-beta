@@ -1,8 +1,8 @@
 <p id="notice"><%= notice %></p>
 
 <h2>
-  <strong>Content:</strong>
-  <%= @question.content %>
+  <strong>Question</strong>
+</br>  <%= @question.content %>
 </h2>
 
 <h3>Answers</h3>
@@ -13,7 +13,6 @@
   </p>
  
   <p>
-    <strong>Number</strong>
     <%= answer.number %>
   </p>
 <% end %>
@@ -32,5 +31,10 @@
     <%= f.submit %>
   </p>
 <% end %>
+    <% if user_signed_in? %>
+        <% if current_user.id == @question.user_id %>
+
 <%= link_to 'Edit', edit_question_path(@question) %> |
+<% end %>
+<% end %>
 <%= link_to 'Back', questions_path %>

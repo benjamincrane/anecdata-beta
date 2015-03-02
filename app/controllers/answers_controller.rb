@@ -25,19 +25,22 @@ class AnswersController < ApplicationController
   # POST /answers.json
   def create
     @question = Question.find(params[:question_id])
-    @answer = @question.answers.create(answer_params)
-    @answer.user_id = current_user.id
-    @answer.user_name = current_user.name
-    # @answer = Answer.new(answer_params)
-
-    respond_to do |format|
-      if @answer.save
-        format.html { redirect_to @question, notice: 'Answer was successfully created.' }
-        format.json { render :show, status: :created, location: @answer }
-      else
-        format.html { render :new }
-        format.json { render json: @answer.errors, status: :unprocessable_entity }
+    if user_signed_in?
+      @answer = @question.answers.create(answer_params)
+      @answer.user_id = current_user.id
+      @answer.user_name = current_user.name
+      # @answer = Answer.new(answer_params)
+      respond_to do |format|
+        if @answer.save
+          format.html { redirect_to @question, notice: 'Answer was successfully created.' }
+          format.json { render :show, status: :created, location: @answer }
+        else
+          format.html { render :new }
+          format.json { render json: @answer.errors, status: :unprocessable_entity }
+        end
       end
+    else
+      redirect_to question_path(@question), notice: "You must be signed in."
     end
   end
 

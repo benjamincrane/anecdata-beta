@@ -14,7 +14,11 @@ class QuestionsController < ApplicationController
 
   # GET /questions/new
   def new
-    @question = Question.new
+    if user_signed_in?
+      @question = Question.new
+    else
+      redirect_to root_path, notice: "Sign up so you can start asking your own questions!" 
+    end
   end
 
   # GET /questions/1/edit
@@ -24,17 +28,21 @@ class QuestionsController < ApplicationController
   # POST /questions
   # POST /questions.json
   def create
-    @question = Question.new(question_params)
-    @question.user_id = current_user.id
-    # @answer = Answer.new(answer_params)
-    respond_to do |format|
-      if @question.save
-        format.html { redirect_to @question, notice: 'Question was successfully created.' }
-        format.json { render :show, status: :created, location: @question }
-      else
-        format.html { render :new }
-        format.json { render json: @question.errors, status: :unprocessable_entity }
+    if user_signed_in?
+      @question = Question.new(question_params)
+      @question.user_id = current_user.id
+      # @answer = Answer.new(answer_params)
+      respond_to do |format|
+        if @question.save
+          format.html { redirect_to @question, notice: 'Question was successfully created.' }
+          format.json { render :show, status: :created, location: @question }
+        else
+          format.html { render :new }
+          format.json { render json: @question.errors, status: :unprocessable_entity }
+        end
       end
+    else
+      redirect_to root_path, notice: "You must be logged in." 
     end
   end
 
